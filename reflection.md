@@ -6,11 +6,22 @@
 
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
+- Three core actions a user should be able to perform: 1. set alarm for walking pet 2.set reminder to feeding them 3.grooming schedule reminder
+- Classes: Pet, reminder, Tasks, owner's preferences
+- Pet attribute: name, age, type(ex. dog/cat), owner's name, insurance
+- Pet methods: create a pet profile
+- reminder attribute: date(MM/DD/YYY), day(Monday/Tuesday/Wednesday), time, title, repeat or not
+- reminder methods: create reminder, delete reminder, edit reminder
+- Tasks: title, description
+- Tasks methods: create task, link with the reminder, delete task, edit task
+- Preference attribute: food type, spending rate(ex. does the owner prefer spending a lot on the pet, or not too much), pet's health history
+- Preference methods: upload pet's healthy history, set spending rate, create food type, change food type, edit spending rate
 
 **b. Design changes**
 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
+- I have four other classes, total 8 classes: Owner, Pet, DailyPlan, Preference, Task, Appointment, and HealthRecord, Reminder
 
 ---
 
@@ -18,12 +29,12 @@
 
 **a. Constraints and priorities**
 
-- What constraints does your scheduler consider (for example: time, priority, preferences)?
+- What constraints does your reminderr consider (for example: time, priority, preferences)?
 - How did you decide which constraints mattered most?
 
 **b. Tradeoffs**
 
-- Describe one tradeoff your scheduler makes.
+- Describe one tradeoff your reminderr makes.
 - Why is that tradeoff reasonable for this scenario?
 
 ---
@@ -51,7 +62,7 @@
 
 **b. Confidence**
 
-- How confident are you that your scheduler works correctly?
+- How confident are you that your reminderr works correctly?
 - What edge cases would you test next if you had more time?
 
 ---

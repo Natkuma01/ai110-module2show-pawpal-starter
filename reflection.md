@@ -17,11 +17,16 @@
 - Preference attribute: food type, spending rate(ex. does the owner prefer spending a lot on the pet, or not too much), pet's health history
 - Preference methods: upload pet's healthy history, set spending rate, create food type, change food type, edit spending rate
 
+
 **b. Design changes**
 
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
-- I have four other classes, total 8 classes: Owner, Pet, DailyPlan, Preference, Task, Appointment, and HealthRecord, Reminder
+- The tools comes up with a more complex diagram than I thought. I changed the relationship between Pet and Owner, from one Owner to One pet, to one Owner can have many pets. Because one owner can have many pets.
+- make many changes for the attributes
+- setting some attributes as optional
+- delete unnecessary classes: such as daily plan class, health record class, appointment class, reminder class
+
 
 ---
 

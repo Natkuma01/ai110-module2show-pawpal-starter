@@ -54,6 +54,31 @@ class Task:
     def mark_complete(self) -> None:
         self.is_completed = True
 
+    """Generates repeated copies of this task for the next week."""
+    def generate_repeats(self, repeat_type: str) -> list[Task]:
+        from datetime import timedelta
+        repeats = []
+        if repeat_type == "daily":
+            for i in range(1, 7):
+                repeats.append(Task(
+                    task_id=str(uuid.uuid4()),
+                    description=self.description,
+                    date=self.date + timedelta(days=i),
+                    time=self.time,
+                    frequency=self.frequency,
+                    priority=self.priority,
+                ))
+        elif repeat_type == "weekly":
+            repeats.append(Task(
+                task_id=str(uuid.uuid4()),
+                description=self.description,
+                date=self.date + timedelta(weeks=1),
+                time=self.time,
+                frequency=self.frequency,
+                priority=self.priority,
+            ))
+        return repeats
+
 
 @dataclass
 class Scheduler:
@@ -141,6 +166,17 @@ class Owner:
             if pet.pet_id == pet_id:
                 return pet
         raise ValueError(f"Pet '{pet_id}' not found")
+
+    """Iterates all pets and their tasks, comparing each task's date and time to the new task; returns (pet, task) pairs where both match."""
+    def find_conflicts(self, new_task: Task) -> list[tuple[Pet, Task]]:
+        conflicts = []
+        new_date = str(new_task.date)
+        new_time = new_task.time.strip()
+        for pet in self.pets:
+            for task in pet.tasks:
+                if str(task.date) == new_date and task.time.strip() == new_time:
+                    conflicts.append((pet, task))
+        return conflicts
 
     # --- Pet management ---
     """Adds a pet to the owner's pet list."""

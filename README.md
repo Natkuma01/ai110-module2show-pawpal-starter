@@ -41,3 +41,8 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+### Smart Schediling 
+- Add conflict warning message when same pet or different pets try to add a task same time as an existed tasks
+- Tasks are listed by incompleted, completed, pet's name
+- Tasks can set to repeat daily or weekly

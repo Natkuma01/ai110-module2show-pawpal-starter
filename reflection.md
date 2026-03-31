@@ -36,12 +36,12 @@
 
 - What constraints does your reminderr consider (for example: time, priority, preferences)?
 - How did you decide which constraints mattered most?
-
+the  reminder will first sort the list by time, then sort the list by priority
 **b. Tradeoffs**
 
 - Describe one tradeoff your reminderr makes.
 - Why is that tradeoff reasonable for this scenario?
-
+the conflict warning message only display when the exact time matches, it can check the same pet or different pets. However, there are no duration add for the task. So if one task is set at 8:00am, another task is can set for 8:01a.m. with the same pet or other pets.
 ---
 
 ## 3. AI Collaboration

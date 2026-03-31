@@ -54,20 +54,19 @@ class Task:
     def mark_complete(self) -> None:
         self.is_completed = True
 
-    """Generates repeated copies of this task for the next week."""
+    """Generates the next occurrence of this task based on repeat_type."""
     def generate_repeats(self, repeat_type: str) -> list[Task]:
         from datetime import timedelta
         repeats = []
         if repeat_type == "daily":
-            for i in range(1, 7):
-                repeats.append(Task(
-                    task_id=str(uuid.uuid4()),
-                    description=self.description,
-                    date=self.date + timedelta(days=i),
-                    time=self.time,
-                    frequency=self.frequency,
-                    priority=self.priority,
-                ))
+            repeats.append(Task(
+                task_id=str(uuid.uuid4()),
+                description=self.description,
+                date=self.date + timedelta(days=1),
+                time=self.time,
+                frequency=self.frequency,
+                priority=self.priority,
+            ))
         elif repeat_type == "weekly":
             repeats.append(Task(
                 task_id=str(uuid.uuid4()),

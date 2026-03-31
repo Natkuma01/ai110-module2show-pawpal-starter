@@ -46,3 +46,13 @@ pip install -r requirements.txt
 - Add conflict warning message when same pet or different pets try to add a task same time as an existed tasks
 - Tasks are listed by incompleted, completed, pet's name
 - Tasks can set to repeat daily or weekly
+
+### Testing PawPal+
+- **Mark complete changes status** — creates a task and calls `mark_complete()`, then verifies `is_completed` flips from `False` to `True`
+- **Add task increases pet task count** — adds a task to a pet via the owner and confirms the pet's task list grows from 0 to 1
+- **Schedule sorts tasks chronologically** — gives the scheduler three tasks in random time order and verifies they come out sorted earliest to latest
+- **Completing a daily task generates the next day's task** — marks a daily task complete, calls `generate_repeats("daily")`, and confirms exactly one new task is created for the following day with the same description and time
+- In terminal, run `python -m pytest`
+
+### Confidence Level
+⭐️⭐️⭐️⭐️⭐️

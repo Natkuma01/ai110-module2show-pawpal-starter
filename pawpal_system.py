@@ -122,7 +122,13 @@ class Pet:
     species: str
     breed: str
     insurance_provider: str
+    avatar: str = "🐾"
     tasks: list[Task] = field(default_factory=list)
+    preference: Optional[Preference] = None
+
+    """Sets the preference for this pet."""
+    def set_preference(self, pref: Preference) -> None:
+        self.preference = pref
 
     """Returns a dictionary of the pet's profile information."""
     def create_profile(self) -> dict:

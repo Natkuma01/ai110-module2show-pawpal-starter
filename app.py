@@ -1,9 +1,81 @@
 import streamlit as st
 import uuid
+import time
 from datetime import date
 from pawpal_system import Owner, Pet, Task, Preference
 
 st.set_page_config(page_title="PawPal+", page_icon="🐾", layout="centered")
+
+st.markdown("""
+<style>
+/* ── Bubbly global styles ───────────────────────────────────────────── */
+
+/* Rounded, pill-style buttons */
+.stButton > button {
+    border-radius: 999px !important;
+    font-weight: 700 !important;
+    padding: 0.4rem 1.4rem !important;
+    background: linear-gradient(135deg, #a855f7, #ec4899) !important;
+    color: #fff !important;
+    border: none !important;
+    box-shadow: 0 4px 14px rgba(168,85,247,0.45) !important;
+    transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+.stButton > button:hover {
+    transform: scale(1.05) !important;
+    box-shadow: 0 6px 20px rgba(168,85,247,0.6) !important;
+}
+
+/* Bubbly expander panels */
+[data-testid="stExpander"] {
+    border-radius: 20px !important;
+    border: 2px solid #7c3aed !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 18px rgba(124,58,237,0.3) !important;
+}
+
+/* Rounded input boxes */
+input, textarea, select, [data-baseweb="select"] {
+    border-radius: 14px !important;
+}
+
+/* Pill-style info / warning / success boxes */
+[data-testid="stAlert"] {
+    border-radius: 18px !important;
+}
+
+/* Rounded metric cards */
+[data-testid="stMetric"] {
+    border-radius: 18px !important;
+    background: #2d0060 !important;
+    padding: 0.8rem 1rem !important;
+    box-shadow: 0 4px 14px rgba(168,85,247,0.25) !important;
+}
+
+/* Bubbly title */
+h1 {
+    background: linear-gradient(90deg, #c084fc, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2.6rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.5px;
+}
+
+/* Section subheaders */
+h2, h3 {
+    color: #d8b4fe !important;
+    font-weight: 800 !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
+def pink_info(msg: str) -> None:
+    st.markdown(
+        f'<div style="background:#fdf0f8; border-left:4px solid #f0abfc; border-radius:18px;'
+        f' padding:0.75rem 1.1rem; color:#7e22ce; font-size:0.95rem;">{msg}</div>',
+        unsafe_allow_html=True,
+    )
 
 # ── Session state init ──────────────────────────────────────────────────────
 if "owner" not in st.session_state:
@@ -51,7 +123,7 @@ st.divider()
 
 # Only show the rest of the app once an owner exists
 if st.session_state.owner is None:
-    st.info("Create an owner profile above to get started.")
+    pink_info("Create an owner profile above to get started.")
     st.stop()
 
 owner = st.session_state.owner  # refresh local reference after potential rerun
@@ -63,8 +135,11 @@ owner = st.session_state.owner  # refresh local reference after potential rerun
 # ════════════════════════════════════════════════════════════════════════════
 st.subheader("Pets")
 
+AVATAR_OPTIONS = ["🐶", "🐱", "🐰", "🐹", "🐦", "🐠", "🐢", "🐍", "🦜", "🐾"]
+
 with st.expander("Add a pet", expanded=len(owner.pets) == 0):
     with st.form("pet_form"):
+        p_avatar   = st.selectbox("Avatar", AVATAR_OPTIONS, format_func=lambda e: e)
         p_name     = st.text_input("Pet name", value="Mochi")
         p_age      = st.number_input("Age (years)", min_value=0, max_value=30, value=2)
         p_species  = st.selectbox("Species", ["dog", "cat", "other"])
@@ -80,9 +155,10 @@ with st.expander("Add a pet", expanded=len(owner.pets) == 0):
             species=p_species,
             breed=p_breed,
             insurance_provider=p_insurer,
+            avatar=p_avatar,
         )
         owner.add_pet(pet)
-        st.success(f"{p_name} added!")
+        st.success(f"{p_avatar} {p_name} added!")
         st.rerun()
 
 if owner.pets:
@@ -90,7 +166,7 @@ if owner.pets:
         cols = st.columns([3, 1])
         with cols[0]:
             st.markdown(
-                f"**{pet.name}** — {pet.species}, {pet.breed}, age {pet.age} | "
+                f"{pet.avatar} **{pet.name}** — {pet.species}, {pet.breed}, age {pet.age} | "
                 f"Insurance: {pet.insurance_provider} | Tasks: {len(pet.tasks)}"
             )
         with cols[1]:
@@ -98,7 +174,7 @@ if owner.pets:
                 owner.remove_pet(pet.pet_id)
                 st.rerun()
 else:
-    st.info("No pets yet. Add one above.")
+    pink_info("No pets yet. Add one above.")
 
 st.divider()
 
@@ -110,7 +186,7 @@ st.divider()
 st.subheader("Tasks")
 
 if not owner.pets:
-    st.info("Add a pet first before creating tasks.")
+    pink_info("Add a pet first before creating tasks.")
 else:
     with st.expander("Add a task"):
         with st.form("task_form"):
@@ -201,7 +277,7 @@ else:
                     owner.remove_task(pet.pet_id, task.task_id)
                     st.rerun()
     else:
-        st.info("No tasks match this filter.")
+        pink_info("No tasks match this filter.")
 
 st.divider()
 
@@ -212,32 +288,40 @@ st.divider()
 # ════════════════════════════════════════════════════════════════════════════
 st.subheader("Preferences")
 
-with st.expander("Set preferences"):
-    with st.form("pref_form"):
-        pref_feeding  = st.text_input("Feeding schedule", value="twice daily")
-        pref_spending = st.selectbox("Spending rate", ["low", "medium", "high"], index=1)
-        pref_walk_time = st.text_input("Preferred walk time", value="07:00")
-        pref_walk_dur  = st.number_input("Walk duration (minutes)", min_value=5, max_value=120, value=30)
-        save_pref = st.form_submit_button("Save preferences")
+if not owner.pets:
+    pink_info("Add a pet first before setting preferences.")
+else:
+    with st.expander("Set preferences"):
+        with st.form("pref_form"):
+            pref_pet      = st.selectbox("Select pet", options=owner.pets, format_func=lambda p: p.name)
+            pref_feeding  = st.text_input("Feeding schedule", value="twice daily")
+            pref_spending = st.selectbox("Spending rate", ["low", "medium", "high"], index=1)
+            pref_walk_time = st.text_input("Preferred walk time", value="07:00")
+            pref_walk_dur  = st.number_input("Walk duration (minutes)", min_value=5, max_value=120, value=30)
+            save_pref = st.form_submit_button("Save preferences")
 
-    if save_pref:
-        owner.update_preferences(
-            Preference(
-                feeding_schedule=pref_feeding,
-                spending_rate=pref_spending,
-                preferred_walk_time=pref_walk_time,
-                walk_duration_minutes=int(pref_walk_dur),
+        if save_pref:
+            pref_pet.set_preference(
+                Preference(
+                    feeding_schedule=pref_feeding,
+                    spending_rate=pref_spending,
+                    preferred_walk_time=pref_walk_time,
+                    walk_duration_minutes=int(pref_walk_dur),
+                )
             )
-        )
-        st.success("Preferences saved!")
-        st.rerun()
+            msg = st.empty()
+            msg.success(f"Preferences saved for {pref_pet.name}!")
+            time.sleep(3)
+            msg.empty()
+            st.rerun()
 
-if owner.preference:
-    p = owner.preference
-    st.markdown(
-        f"Feeding: **{p.feeding_schedule}** | Spending: **{p.spending_rate}** | "
-        f"Walk at **{p.preferred_walk_time}** for **{p.walk_duration_minutes} min**"
-    )
+    for pet in owner.pets:
+        if pet.preference:
+            p = pet.preference
+            st.markdown(
+                f"**{pet.name}** — Feeding: {p.feeding_schedule} | Spending: {p.spending_rate} | "
+                f"Walk at {p.preferred_walk_time} for {p.walk_duration_minutes} min"
+            )
 
 st.divider()
 
@@ -256,7 +340,7 @@ if st.button("Generate schedule"):
     else:
         scheduler = owner.generate_daily_plan(sched_date, sched_date)
         if not scheduler.tasks:
-            st.info(f"No tasks found for {sched_date}.")
+            pink_info(f"No tasks found for {sched_date}.")
         else:
             st.success(f"Schedule for {sched_date} — {len(scheduler.tasks)} task(s)")
             for task in scheduler.tasks:

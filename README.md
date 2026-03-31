@@ -56,3 +56,15 @@ pip install -r requirements.txt
 
 ### Confidence Level
 ⭐️⭐️⭐️⭐️⭐️
+
+### Features
+- create a profile with name, email, and phone to get started; reset at any time
+- add multiple pets with name, age, species, breed, insurance provider, and a custom emoji avatar; remove pets as needed
+- set individual care preferences for each pet independently
+- assign tasks to a specific pet with a description, date, scheduled time, priority (low / medium / high), and frequency (once / daily / weekly / monthly)
+- warns when a new task's date and time clash with an existing task
+- view tasks by all, completed, incomplete, or filtered by individual pet name
+- generate a daily plan for any date; tasks are sorted first by time, then by priority (high → medium → low)
+
+### Demo
+

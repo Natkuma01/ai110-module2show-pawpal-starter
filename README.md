@@ -67,4 +67,5 @@ pip install -r requirements.txt
 - generate a daily plan for any date; tasks are sorted first by time, then by priority (high → medium → low)
 
 ### Demo
+<img width="1176" height="880" alt="Screenshot 2026-03-30 at 9 46 25 PM" src="https://github.com/user-attachments/assets/fefc3a63-0454-4af3-94f0-6d0b6cca3a6b" />
 
